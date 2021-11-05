@@ -1,0 +1,59 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: azure
+platforms:
+  - name: molecule-ubuntu-18-04
+    image:
+      offer: UbuntuServer
+      publisher: Canonical
+      sku: 18.04-LTS
+      version: latest
+  - name: molecule-ubuntu-20-04
+    image:
+      offer: 0001-com-ubuntu-server-focal
+      publisher: Canonical
+      sku: 20_04-lts
+      version: latest
+  - name: molecule-debian-10
+    image:
+      offer: debian-10
+      publisher: Debian
+      sku: 10
+      version: latest
+  - name: molecule-centos-7
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: "7_9"
+      version: latest
+  - name: molecule-centos-8
+    image:
+      offer: CentOS
+      publisher: OpenLogic
+      sku: "8_3"
+      version: latest
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      vault_password_file: "~/.ansible_vault_prod"
+verifier:
+  name: ansible
+
+##########################################################
+# Variables
+##########################################################
+
+resource_group_name: molecule_{{ role_name | replace('ansible-role-', '') }}
+azure_tags:
+      deployer: cit-compute_molecule
+      application: molecule
+      stage: test
+virtual_network_name: VNET-tomtom-default
+virtual_network_resource_group_name: RG-WEU-vnet-tomtom-default
+subnet_name: SN-tomtom-default
+vm_size: Standard_B1ms
+#Valid options are: Disabled, Dynamic, Static
+public_ip_allocation_method: Disabled
