@@ -3,7 +3,7 @@
   hosts: localhost
   connection: local
   gather_facts: false
-  no_log: "{{ molecule_no_log }}"
+  no_log: true
   vars:
     location: "{{ lookup('env', 'AZURE_REGION') or 'westeurope' }}"
     ssh_user: molecule
@@ -65,7 +65,7 @@
           'user': "{{ ssh_user }}",
           'port': "{{ ssh_port }}",
           'identity_file': "{{ keypair_path }}", }
-      with_items: 
+      with_items:
         - "{{ azure_jobs.results }}"
       register: instance_config_dict
       when: server.changed | bool
@@ -80,7 +80,7 @@
         content: "{{  instance_conf | to_json | from_json | to_yaml }}"
         dest: "{{ molecule_instance_config }}"
       when: server.changed | bool
-   
+
     - name: Wait for SSH
       wait_for:
         port: "{{ ssh_port }}"
